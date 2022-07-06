@@ -1,4 +1,4 @@
-public class Lesson1 {
+public class Lesson1Test {
 
         @Test
         void openPage(){
