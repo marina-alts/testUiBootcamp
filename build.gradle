@@ -14,7 +14,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.3.0'
     implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.3.0'
-    implementation group: 'org.junit', name: 'junit5-engine', version: '5.0.0-ALPHA'
 }
 
 test {
