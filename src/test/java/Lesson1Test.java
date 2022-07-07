@@ -8,8 +8,10 @@ public class Lesson1Test {
         @Test
         void openPage(){
 
+                //1st implementation without WebDriverManager
                 //System.setProperty("webdriver.chrome.driver", "D:\\chromedriver_win32\\chromedriver.exe");
 
+                //2nd implementation with WebDriverManager
                 WebDriverManager.chromedriver().setup();
 
                 WebDriver driver = new ChromeDriver();
