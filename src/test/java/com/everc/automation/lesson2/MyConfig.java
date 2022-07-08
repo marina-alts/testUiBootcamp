@@ -1,8 +1,10 @@
 package com.everc.automation.lesson2;
 
- @org.aeonbits.owner.Config.Sources({"file:.src/test/resources/config/config.properties"})
+import org.aeonbits.owner.Config;
 
-public interface MyConfig extends org.aeonbits.owner.Config {
+@Config.Sources({"classpath:config.properties"})
+public interface MyConfig extends Config {
     String browser();
+
     String url();
 }
