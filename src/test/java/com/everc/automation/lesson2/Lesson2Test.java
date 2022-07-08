@@ -12,10 +12,10 @@ import java.util.Random;
 
 public class Lesson2Test {
 
-    static MyConfig config = ConfigFactory.create(MyConfig.class);
-
     @Test
     public void getConfigs(){
+        MyConfig config = ConfigFactory.create(MyConfig.class);
+
         System.out.println(config.browser());
         System.out.println(config.url());
     }
