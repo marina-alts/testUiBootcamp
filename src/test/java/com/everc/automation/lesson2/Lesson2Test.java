@@ -1,44 +1,58 @@
 package com.everc.automation.lesson2;
 
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.WebDriver;
+
+import java.util.Random;
 
 public class Lesson2Test {
 
     @Test
-    public void verifyEvercTitle(){
+    public void verifyEvercTitleAndUrl(){
 
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
-
         WebDriver driver = wds.getWebDriver("");
 
-        driver.get("https://google.com");
+        driver.get("https://everc.com");
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(driver.getTitle()).isEqualTo("EverC");
+        softAssertions.assertThat(driver.getCurrentUrl()).isEqualTo("everc.com");
 
         driver.close();
+
+        softAssertions.assertAll();
     }
 
     @Test
-    public void verifyRandomRange(){
+    public void verifyRandomRange1to10(){
 
-        WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
+        Random rand = new Random();
+        int checkMe = rand.nextInt();
 
-        WebDriver driver = wds.getWebDriver("edge");
+        Assertions.assertTrue(checkMe >= 1 && checkMe <= 10);
 
-        driver.get("https://google.com");
-
-        driver.close();
     }
 
-    @Test
-    public void findNumber5(){
+    @ParameterizedTest
+    @ValueSource(strings = {"https://google.com","https://everc.com"})
+    public void findEvercTitle(String url){
 
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
-
         WebDriver driver = wds.getWebDriver("firefox");
 
-        driver.get("https://google.com");
+        driver.get(url);
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(driver.getTitle()).isEqualTo("EverC");
 
         driver.close();
+
+        softAssertions.assertAll();
     }
 
 }
