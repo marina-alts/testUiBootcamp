@@ -1,6 +1,5 @@
 package com.everc.automation.lesson2;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,12 +9,12 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.Random;
 
+import static com.everc.automation.lesson2.MyConfig.config;
+
 public class Lesson2Test {
 
     @Test
     public void getConfigs(){
-        MyConfig config = ConfigFactory.create(MyConfig.class);
-
         System.out.println(config.browser());
         System.out.println(config.url());
     }
