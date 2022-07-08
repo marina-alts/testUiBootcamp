@@ -17,6 +17,8 @@ public class Lesson2Test {
     public void getConfigs(){
         System.out.println(config.browser());
         System.out.println(config.url());
+
+        Assertions.assertTrue(config.browser() != null && config.url() != null);
     }
 
     @Test
