@@ -1,5 +1,6 @@
 package com.everc.automation.lesson2;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,14 @@ import org.openqa.selenium.WebDriver;
 import java.util.Random;
 
 public class Lesson2Test {
+
+    static MyConfig config = ConfigFactory.create(MyConfig.class);
+
+    @Test
+    public void getConfigs(){
+        System.out.println(config.browser());
+        System.out.println(config.url());
+    }
 
     @Test
     public void verifyEvercTitleAndUrl(){
@@ -40,7 +49,7 @@ public class Lesson2Test {
 
     @ParameterizedTest
     @ValueSource(strings = {"https://google.com","https://everc.com"})
-    public void findEvercTitle(String url){
+    public void findUrlWithEvercTitle(String url){
 
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         WebDriver driver = wds.getWebDriver("firefox");
