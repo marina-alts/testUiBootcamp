@@ -42,6 +42,9 @@ class Lesson3Test extends BasePage {
         driver.findElement(By.id("passwordControl")).sendKeys(defaultPassword);
         driver.findElement(By.id("repeatPasswordControl")).sendKeys(defaultPassword);
         driver.findElement(By.cssSelector("[id^='mat-select-value']")).click();
+
+        Thread.sleep(5000);
+
         driver.findElement(By.cssSelector("[class='mat-option-text']")).click();
         driver.findElement(By.id("securityAnswerControl")).sendKeys(defaultSecurityAnswer);
 
