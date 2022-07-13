@@ -94,7 +94,7 @@ class Lesson3Test extends BasePage {
             emailField.clear();
         }
 
-        //expected error for valid emails
+        //expected error for invalid emails
         for (String email:invalidEmails) {
             emailField.sendKeys(email);
             formTitle.click();
@@ -121,13 +121,11 @@ class Lesson3Test extends BasePage {
         driver.findElement(By.id("password")).sendKeys(defaultPassword);
 
         Assertions.assertTrue(driver.findElement(By.id("loginButton")).isEnabled());
-
         driver.findElement(By.id("loginButton")).click();
 
         Thread.sleep(5000);
 
         driver.findElement(By.id("navbarAccount")).click();
-
         Assertions.assertEquals(email,driver.findElement(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span")).getText());
     }
 
