@@ -14,7 +14,7 @@ class Lesson3Test extends BasePage {
     String defaultPassword = "Password123";
     String defaultSecurityAnswer = "test text";
 
-    @BeforeAll
+    @BeforeEach
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver("");
@@ -23,7 +23,7 @@ class Lesson3Test extends BasePage {
         driver.findElement(By.cssSelector("[aria-label='Close Welcome Banner']")).click();
     }
 
-    @AfterAll
+    @AfterEach
     public void tearDown() {
         driver.close();
     }
