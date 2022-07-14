@@ -1,5 +1,6 @@
-package com.everc.automation.lesson2;
+package com.everc.automation.test;
 
+import com.everc.automation.framework.WebDriverSingleton;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.Random;
 
-import static com.everc.automation.lesson2.MyConfig.config;
+import static com.everc.automation.config.MyConfig.config;
 
 public class Lesson2Test {
 

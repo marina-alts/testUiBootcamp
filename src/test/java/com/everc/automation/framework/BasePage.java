@@ -1,4 +1,4 @@
-package com.everc.automation.lesson3;
+package com.everc.automation.framework;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;

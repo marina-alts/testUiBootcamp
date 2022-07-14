@@ -1,4 +1,4 @@
-package com.everc.automation.lesson2;
+package com.everc.automation.config;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;

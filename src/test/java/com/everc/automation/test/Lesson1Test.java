@@ -1,4 +1,4 @@
-package com.everc.automation.lesson1;
+package com.everc.automation.test;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;

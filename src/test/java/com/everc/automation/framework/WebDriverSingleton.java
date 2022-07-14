@@ -1,4 +1,4 @@
-package com.everc.automation.lesson2;
+package com.everc.automation.framework;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

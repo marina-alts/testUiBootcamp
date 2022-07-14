@@ -1,6 +1,7 @@
-package com.everc.automation.lesson3;
+package com.everc.automation.test;
 
-import com.everc.automation.lesson2.WebDriverSingleton;
+import com.everc.automation.framework.WebDriverSingleton;
+import com.everc.automation.framework.BasePage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 
