@@ -34,7 +34,7 @@ class LoginTest extends BasePage {
 
         String email = generateRandomEmail();
 
-        signUp(driver,email, defaultPassword, defaultSecurityAnswer);
+        signUp(driver, email, defaultPassword, defaultSecurityAnswer);
 
         driver.findElement(By.id("navbarAccount")).click();
         driver.findElement(By.id("navbarLoginButton")).click();
@@ -50,7 +50,7 @@ class LoginTest extends BasePage {
         Thread.sleep(5000);
 
         driver.findElement(By.id("navbarAccount")).click();
-        Assertions.assertEquals(email,driver.findElement(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span")).getText());
+        Assertions.assertEquals(email, driver.findElement(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span")).getText());
     }
 
 }
