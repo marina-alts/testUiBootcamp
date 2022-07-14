@@ -1,26 +1,32 @@
 package com.everc.automation.test;
 
-import com.everc.automation.framework.WebDriverSingleton;
 import com.everc.automation.framework.BasePage;
+import com.everc.automation.framework.WebDriverSingleton;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.everc.automation.config.MyConfig.config;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class Lesson3Test extends BasePage {
+class SignupTest extends BasePage {
 
     WebDriver driver;
     String defaultPassword = "Password123";
     String defaultSecurityAnswer = "test text";
+    String emptyEmailMessage = "Please provide an email address.";
+    String wrongEmailMessage = "Email address is not valid.";
 
     @BeforeEach
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
-        driver = wds.getWebDriver("");
-        driver.manage().window().setSize(new Dimension(1600,900));
-        driver.get("https://juice-shot.herokuapp.com/#/");
+        driver = wds.getWebDriver(config.browser());
+        driver.manage().window().maximize();
+        driver.get(config.url());
         driver.findElement(By.cssSelector("[aria-label='Close Welcome Banner']")).click();
     }
 
@@ -59,10 +65,24 @@ class Lesson3Test extends BasePage {
     }
 
     @Test
-    public void validateSignupEmailField() throws InterruptedException {
+    public void validateSignupEmptyEmailField() throws InterruptedException {
 
-        String emptyEmailMessage = "Please provide an email address.";
-        String wrongEmailMessage = "Email address is not valid.";
+        openSignupPage(driver);
+
+        WebElement emailField = driver.findElement(By.id("emailControl"));
+        WebElement formTitle = driver.findElement(By.xpath("//h1"));
+
+        //empty email error for empty email
+        emailField.sendKeys("");
+        formTitle.click();
+        Thread.sleep(1000);
+        Assertions.assertEquals(emptyEmailMessage, driver.findElement(By.cssSelector("[id^='mat-error']")).getText());
+        emailField.clear();
+
+    }
+
+    @Test
+    public void validateSignupEmailFieldValidEmails() throws InterruptedException {
 
         openSignupPage(driver);
 
@@ -75,20 +95,6 @@ class Lesson3Test extends BasePage {
         validEmails.add(generateRandomEmail() + ".com");
         validEmails.add("t." + generateRandomEmail());
 
-        List<String> invalidEmails = new ArrayList<>();
-        invalidEmails.add(" ");
-        invalidEmails.add("123");
-        invalidEmails.add("qwe");
-        invalidEmails.add("t " + generateRandomEmail());
-        invalidEmails.add("t[" + generateRandomEmail());
-
-        //empty email error for empty email
-        emailField.sendKeys("");
-        formTitle.click();
-        Thread.sleep(1000);
-        Assertions.assertEquals(emptyEmailMessage, driver.findElement(By.cssSelector("[id^='mat-error']")).getText());
-        emailField.clear();
-
         //no errors for valid emails
         for (String email:validEmails) {
             emailField.sendKeys(email);
@@ -97,6 +103,22 @@ class Lesson3Test extends BasePage {
             Assertions.assertTrue(driver.findElements(By.cssSelector("[id^='mat-error']")).size() == 0);
             emailField.clear();
         }
+    }
+
+    @Test
+    public void validateSignupEmailFieldInvalidEmails() throws InterruptedException {
+
+        openSignupPage(driver);
+
+        WebElement emailField = driver.findElement(By.id("emailControl"));
+        WebElement formTitle = driver.findElement(By.xpath("//h1"));
+
+        List<String> invalidEmails = new ArrayList<>();
+        invalidEmails.add(" ");
+        invalidEmails.add("123");
+        invalidEmails.add("qwe");
+        invalidEmails.add("t " + generateRandomEmail());
+        invalidEmails.add("t[" + generateRandomEmail());
 
         //expected error for invalid emails
         for (String email:invalidEmails) {
@@ -107,30 +129,6 @@ class Lesson3Test extends BasePage {
             emailField.clear();
         }
 
-    }
-
-    @Test
-    public void canLogin() throws InterruptedException {
-
-        String email = generateRandomEmail();
-
-        signUp(driver,email, defaultPassword, defaultSecurityAnswer);
-
-        driver.findElement(By.id("navbarAccount")).click();
-        driver.findElement(By.id("navbarLoginButton")).click();
-
-        Thread.sleep(1000);
-
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("password")).sendKeys(defaultPassword);
-
-        Assertions.assertTrue(driver.findElement(By.id("loginButton")).isEnabled());
-        driver.findElement(By.id("loginButton")).click();
-
-        Thread.sleep(5000);
-
-        driver.findElement(By.id("navbarAccount")).click();
-        Assertions.assertEquals(email,driver.findElement(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span")).getText());
     }
 
 }
