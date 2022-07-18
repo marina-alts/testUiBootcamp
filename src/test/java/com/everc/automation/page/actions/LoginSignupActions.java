@@ -40,6 +40,8 @@ public class LoginSignupActions {
         driver.findElement(By.cssSelector("[class='mat-option-text']")).click();
         driver.findElement(By.id("securityAnswerControl")).sendKeys(customer.getSecurityAnswer());
 
+        wait.until(ExpectedConditions.elementToBeClickable(registerButton));
+
         Assertions.assertTrue(registerButton.isEnabled());
 
         registerButton.click();
@@ -61,6 +63,8 @@ public class LoginSignupActions {
 
         driver.findElement(By.cssSelector("[class='mat-option-text']")).click();
         driver.findElement(By.id("securityAnswerControl")).sendKeys(Customer.defaultSecurityAnswer);
+
+        wait.until(ExpectedConditions.elementToBeClickable(registerButton));
 
         Assertions.assertTrue(registerButton.isEnabled());
 

@@ -1,12 +1,14 @@
 package com.everc.automation.test.login;
 
-import com.everc.automation.page.actions.LoginSignupActions;
 import com.everc.automation.framework.WebDriverSingleton;
 import com.everc.automation.model.Customer;
+import com.everc.automation.page.actions.LoginSignupActions;
 import com.everc.automation.page.login.LoginPage;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -48,17 +50,17 @@ class LoginTest {
         loginPage.clickOnAccountButton();
         loginPage.clickOnLoginNavbarButton();
 
-        softAssertions.assertThat(!driver.findElement(By.id("loginButton")).isEnabled());
+        softAssertions.assertThat(!loginPage.getLoginButton().isEnabled());
 
         loginPage.enterEmail(Customer.defaultEmail);
         loginPage.enterPassword(Customer.defaultPassword);
 
-        softAssertions.assertThat(driver.findElement(By.id("loginButton")).isEnabled());
+        softAssertions.assertThat(loginPage.getLoginButton().isEnabled());
 
         loginPage.clickOnLoginButton();
         loginPage.clickOnAccountButton();
 
-        wait.until(ExpectedConditions.textToBe(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span"), Customer.defaultEmail));
+        wait.until(ExpectedConditions.textToBe(loginPage.getUserAccount(), Customer.defaultEmail));
 
         softAssertions.assertThat(loginPage.getUserAccountName()).isEqualTo(Customer.defaultEmail);
 

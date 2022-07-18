@@ -38,6 +38,11 @@ public class LoginPage extends AbstractPage {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("navbarAccount")));
     }
 
+    public WebElement getLoginButton() {
+        WebElement loginSubmitButton = driver.findElement(loginButton);
+        return loginSubmitButton;
+    }
+
     public void clickOnAccountButton() {
         WebElement accountButton = driver.findElement(By.id("navbarAccount"));
         accountButton.click();
@@ -52,6 +57,11 @@ public class LoginPage extends AbstractPage {
     public String getUserAccountName() {
         WebElement userAccountName = driver.findElement(accountName);
         return userAccountName.getText();
+    }
+
+    public By getUserAccount() {
+        By userAccountName = accountName;
+        return userAccountName;
     }
 
     public void loginAs(Customer customer) {
