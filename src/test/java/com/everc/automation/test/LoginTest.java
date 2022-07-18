@@ -1,27 +1,38 @@
 package com.everc.automation.test;
 
-import com.everc.automation.framework.BasePage;
+import com.everc.automation.page.actions.LoginActions;
 import com.everc.automation.framework.WebDriverSingleton;
+import com.everc.automation.model.Customer;
+import com.everc.automation.page.login.LoginPage;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static com.everc.automation.config.MyConfig.config;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class LoginTest extends BasePage {
+class LoginTest {
 
+    LoginPage loginPage;
     WebDriver driver;
-    String defaultPassword = "Password123";
-    String defaultSecurityAnswer = "test text";
+    WebDriverWait wait;
+    LoginActions loginActions;
+    SoftAssertions softAssertions;
 
     @BeforeEach
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver(config.browser());
-        driver.manage().window().maximize();
-        driver.get(config.url());
-        driver.findElement(By.cssSelector("[aria-label='Close Welcome Banner']")).click();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        LoginActions.init(driver,wait);
+        loginActions = new LoginActions();
+        loginPage = new LoginPage(driver,wait);
+        softAssertions = new SoftAssertions();
     }
 
     @AfterEach
@@ -30,27 +41,28 @@ class LoginTest extends BasePage {
     }
 
     @Test
-    public void canLogin() throws InterruptedException {
+    public void canLogin(){
 
-        String email = generateRandomEmail();
+        loginActions.signUp(driver, wait);
 
-        signUp(driver, email, defaultPassword, defaultSecurityAnswer);
+        loginPage.clickOnAccountButton();
+        loginPage.clickOnLoginNavbarButton();
 
-        driver.findElement(By.id("navbarAccount")).click();
-        driver.findElement(By.id("navbarLoginButton")).click();
+        softAssertions.assertThat(!driver.findElement(By.id("loginButton")).isEnabled());
 
-        Thread.sleep(1000);
+        loginPage.enterEmail(Customer.defaultEmail);
+        loginPage.enterPassword(Customer.defaultPassword);
 
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("password")).sendKeys(defaultPassword);
+        softAssertions.assertThat(driver.findElement(By.id("loginButton")).isEnabled());
 
-        Assertions.assertTrue(driver.findElement(By.id("loginButton")).isEnabled());
-        driver.findElement(By.id("loginButton")).click();
+        loginPage.clickOnLoginButton();
+        loginPage.clickOnAccountButton();
 
-        Thread.sleep(5000);
+        wait.until(ExpectedConditions.textToBe(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span"), Customer.defaultEmail));
 
-        driver.findElement(By.id("navbarAccount")).click();
-        Assertions.assertEquals(email, driver.findElement(By.cssSelector("[aria-label='Go to user profile'][role='menuitem'] span")).getText());
+        softAssertions.assertThat(loginPage.getUserAccountName()).isEqualTo(Customer.defaultEmail);
+
+        softAssertions.assertAll();
     }
 
 }

@@ -1,21 +1,26 @@
 package com.everc.automation.test;
 
-import com.everc.automation.framework.BasePage;
+import com.everc.automation.page.actions.LoginActions;
 import com.everc.automation.framework.WebDriverSingleton;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.everc.automation.config.MyConfig.config;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SignupFieldsTest extends BasePage {
+class SignupFieldsTest extends LoginActions {
 
     WebDriver driver;
+    WebDriverWait wait;
     String emptyEmailMessage = "Please provide an email address.";
     String wrongEmailMessage = "Email address is not valid.";
     String defautEmail = generateRandomEmail();
@@ -24,9 +29,8 @@ class SignupFieldsTest extends BasePage {
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver(config.browser());
-        driver.manage().window().maximize();
-        driver.get(config.url());
-        driver.findElement(By.cssSelector("[aria-label='Close Welcome Banner']")).click();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        init(driver,wait);
     }
 
     @AfterEach
@@ -51,28 +55,21 @@ class SignupFieldsTest extends BasePage {
 
     }
 
-    @Test
-    public void validateSignupEmailFieldValidEmails() throws InterruptedException {
+    @ParameterizedTest
+    @ValueSource(strings = {"test@test.com","t+test@test.com","test@test.com.com","t.test@test.com"})
+    public void validateSignupEmailFieldValidEmails(String email) throws InterruptedException {
 
         openSignupPage(driver);
 
         WebElement emailField = driver.findElement(By.id("emailControl"));
         WebElement formTitle = driver.findElement(By.xpath("//h1"));
 
-        List<String> validEmails = new ArrayList<>();
-        validEmails.add(defautEmail);
-        validEmails.add("t+" + defautEmail);
-        validEmails.add(defautEmail + ".com");
-        validEmails.add("t." + defautEmail);
+        emailField.sendKeys(email);
+        formTitle.click();
+        Thread.sleep(1000);
+        Assertions.assertTrue(driver.findElements(By.cssSelector("[id^='mat-error']")).size() == 0);
+        emailField.clear();
 
-        //no errors for valid emails
-        for (String email : validEmails) {
-            emailField.sendKeys(email);
-            formTitle.click();
-            Thread.sleep(1000);
-            Assertions.assertTrue(driver.findElements(By.cssSelector("[id^='mat-error']")).size() == 0);
-            emailField.clear();
-        }
     }
 
     @Test

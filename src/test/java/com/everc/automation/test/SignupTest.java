@@ -1,28 +1,39 @@
 package com.everc.automation.test;
 
-import com.everc.automation.framework.BasePage;
 import com.everc.automation.framework.WebDriverSingleton;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
+import com.everc.automation.page.actions.LoginActions;
+import com.everc.automation.page.login.SignupPage;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static com.everc.automation.config.MyConfig.config;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SignupTest extends BasePage {
+class SignupTest {
 
+    SignupPage signupPage;
     WebDriver driver;
-    String defaultPassword = "Password123";
-    String defaultSecurityAnswer = "test text";
+    WebDriverWait wait;
+    LoginActions loginActions;
+    SoftAssertions softAssertions;
 
     @BeforeEach
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver(config.browser());
-        driver.manage().window().maximize();
-        driver.get(config.url());
-        driver.findElement(By.cssSelector("[aria-label='Close Welcome Banner']")).click();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        loginActions.init(driver,wait);
+        loginActions = new LoginActions();
+        signupPage = new SignupPage(driver,wait);
+        softAssertions = new SoftAssertions();
     }
 
     @AfterEach
@@ -31,32 +42,22 @@ class SignupTest extends BasePage {
     }
 
     @Test
-    public void canSignUp() throws InterruptedException {
+    public void canSignUp(){
 
-        openSignupPage(driver);
-        String email = generateRandomEmail();
+        loginActions.openSignupPage(driver);
 
-        WebElement registerButton = driver.findElement(By.id("registerButton"));
+        WebElement registerButton = signupPage.getRegisterButton();
 
-        Assertions.assertFalse(registerButton.isEnabled());
+        softAssertions.assertThat(!registerButton.isEnabled());
 
-        driver.findElement(By.id("emailControl")).sendKeys(email);
-        driver.findElement(By.id("passwordControl")).sendKeys(defaultPassword);
-        driver.findElement(By.id("repeatPasswordControl")).sendKeys(defaultPassword);
-        driver.findElement(By.cssSelector("[id^='mat-select-value']")).click();
+        signupPage.fillAllSignupFields();
 
-        Thread.sleep(5000);
+        softAssertions.assertThat(registerButton.isEnabled());
 
-        driver.findElement(By.cssSelector("[class='mat-option-text']")).click();
-        driver.findElement(By.id("securityAnswerControl")).sendKeys(defaultSecurityAnswer);
+        signupPage.clickOnRegisterButton();
 
-        Assertions.assertTrue(registerButton.isEnabled());
-
-        registerButton.click();
-
-        Thread.sleep(5000);
-
-        Assertions.assertEquals("https://juice-shot.herokuapp.com/#/login", driver.getCurrentUrl());
+        softAssertions.assertThat(driver.getCurrentUrl()).isEqualTo("https://juice-shot.herokuapp.com/#/login");
+        softAssertions.assertAll();
     }
 
 }
