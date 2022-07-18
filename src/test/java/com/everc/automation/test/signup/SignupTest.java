@@ -1,4 +1,4 @@
-package com.everc.automation.test;
+package com.everc.automation.test.signup;
 
 import com.everc.automation.framework.WebDriverSingleton;
 import com.everc.automation.page.actions.LoginSignupActions;
