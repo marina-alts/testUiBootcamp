@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static com.everc.automation.config.MyConfig.config;
 
-public class LoginActions {
+public class LoginSignupActions {
 
     public void openSignupPage(WebDriver driver){
         driver.findElement(By.id("navbarAccount")).click();

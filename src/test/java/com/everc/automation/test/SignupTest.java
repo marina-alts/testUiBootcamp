@@ -1,7 +1,7 @@
 package com.everc.automation.test;
 
 import com.everc.automation.framework.WebDriverSingleton;
-import com.everc.automation.page.actions.LoginActions;
+import com.everc.automation.page.actions.LoginSignupActions;
 import com.everc.automation.page.login.SignupPage;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +22,7 @@ class SignupTest {
     SignupPage signupPage;
     WebDriver driver;
     WebDriverWait wait;
-    LoginActions loginActions;
+    LoginSignupActions loginActions;
     SoftAssertions softAssertions;
 
     @BeforeEach
@@ -31,7 +31,7 @@ class SignupTest {
         driver = wds.getWebDriver(config.browser());
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         loginActions.init(driver,wait);
-        loginActions = new LoginActions();
+        loginActions = new LoginSignupActions();
         signupPage = new SignupPage(driver,wait);
         softAssertions = new SoftAssertions();
     }

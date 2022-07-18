@@ -1,6 +1,6 @@
 package com.everc.automation.test;
 
-import com.everc.automation.page.actions.LoginActions;
+import com.everc.automation.page.actions.LoginSignupActions;
 import com.everc.automation.framework.WebDriverSingleton;
 import com.everc.automation.model.Customer;
 import com.everc.automation.page.login.LoginPage;
@@ -21,7 +21,7 @@ class LoginTest {
     LoginPage loginPage;
     WebDriver driver;
     WebDriverWait wait;
-    LoginActions loginActions;
+    LoginSignupActions loginActions;
     SoftAssertions softAssertions;
 
     @BeforeEach
@@ -29,8 +29,8 @@ class LoginTest {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver(config.browser());
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        LoginActions.init(driver,wait);
-        loginActions = new LoginActions();
+        LoginSignupActions.init(driver,wait);
+        loginActions = new LoginSignupActions();
         loginPage = new LoginPage(driver,wait);
         softAssertions = new SoftAssertions();
     }

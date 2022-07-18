@@ -1,36 +1,39 @@
 package com.everc.automation.test;
 
-import com.everc.automation.page.actions.LoginActions;
 import com.everc.automation.framework.WebDriverSingleton;
+import com.everc.automation.page.actions.LoginSignupActions;
+import com.everc.automation.page.login.SignupPage;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.everc.automation.config.MyConfig.config;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SignupFieldsTest extends LoginActions {
+class SignupFieldsTest{
 
+    SignupPage signupPage;
     WebDriver driver;
     WebDriverWait wait;
-    String emptyEmailMessage = "Please provide an email address.";
-    String wrongEmailMessage = "Email address is not valid.";
-    String defautEmail = generateRandomEmail();
+    LoginSignupActions loginActions;
+    SoftAssertions softAssertions;
 
     @BeforeEach
     public void init() {
         WebDriverSingleton wds = WebDriverSingleton.getInstanceOfWebDriverSingleton();
         driver = wds.getWebDriver(config.browser());
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        init(driver,wait);
+        loginActions.init(driver,wait);
+        loginActions = new LoginSignupActions();
+        signupPage = new SignupPage(driver,wait);
+        softAssertions = new SoftAssertions();
     }
 
     @AfterEach
@@ -39,19 +42,19 @@ class SignupFieldsTest extends LoginActions {
     }
 
     @Test
-    public void validateSignupEmptyEmailField() throws InterruptedException {
+    public void validateSignupEmptyEmailField(){
 
-        openSignupPage(driver);
+        loginActions.openSignupPage(driver);
 
-        WebElement emailField = driver.findElement(By.id("emailControl"));
-        WebElement formTitle = driver.findElement(By.xpath("//h1"));
+        signupPage.enterEmail("");
+        signupPage.getSignupTitle().click();
 
-        //empty email error for empty email
-        emailField.sendKeys("");
-        formTitle.click();
-        Thread.sleep(1000);
-        Assertions.assertEquals(emptyEmailMessage, driver.findElement(By.cssSelector("[id^='mat-error']")).getText());
-        emailField.clear();
+        List<WebElement> listOfErrors = signupPage.getErrors();
+
+        softAssertions.assertThat(listOfErrors.size()==1);
+        softAssertions.assertThat(listOfErrors.get(0).getText()).isEqualTo(SignupPage.emptyEmailMessage);
+
+        softAssertions.assertAll();
 
     }
 
@@ -59,42 +62,29 @@ class SignupFieldsTest extends LoginActions {
     @ValueSource(strings = {"test@test.com","t+test@test.com","test@test.com.com","t.test@test.com"})
     public void validateSignupEmailFieldValidEmails(String email) throws InterruptedException {
 
-        openSignupPage(driver);
+        loginActions.openSignupPage(driver);
 
-        WebElement emailField = driver.findElement(By.id("emailControl"));
-        WebElement formTitle = driver.findElement(By.xpath("//h1"));
+        signupPage.enterEmail(email);
+        signupPage.getSignupTitle().click();
 
-        emailField.sendKeys(email);
-        formTitle.click();
-        Thread.sleep(1000);
-        Assertions.assertTrue(driver.findElements(By.cssSelector("[id^='mat-error']")).size() == 0);
-        emailField.clear();
-
+        Assertions.assertTrue(signupPage.getErrors().size()==0);
     }
 
-    @Test
-    public void validateSignupEmailFieldInvalidEmails() throws InterruptedException {
+    @ParameterizedTest
+    @ValueSource(strings = {" ","123","qwe@","t test@test.com","t[test@test.com"})
+    public void validateSignupEmailFieldInvalidEmails(String email) {
 
-        openSignupPage(driver);
+        loginActions.openSignupPage(driver);
 
-        WebElement emailField = driver.findElement(By.id("emailControl"));
-        WebElement formTitle = driver.findElement(By.xpath("//h1"));
+        signupPage.enterEmail(email);
+        signupPage.getSignupTitle().click();
 
-        List<String> invalidEmails = new ArrayList<>();
-        invalidEmails.add(" ");
-        invalidEmails.add("123");
-        invalidEmails.add("qwe");
-        invalidEmails.add("t " + defautEmail);
-        invalidEmails.add("t[" + defautEmail);
+        List<WebElement> listOfErrors = signupPage.getErrors();
 
-        //expected error for invalid emails
-        for (String email : invalidEmails) {
-            emailField.sendKeys(email);
-            formTitle.click();
-            Thread.sleep(1000);
-            Assertions.assertEquals(wrongEmailMessage, driver.findElement(By.cssSelector("[id^='mat-error']")).getText());
-            emailField.clear();
-        }
+        softAssertions.assertThat(listOfErrors.size()==1);
+        softAssertions.assertThat(listOfErrors.get(0).getText()).isEqualTo(SignupPage.wrongEmailMessage);
+
+        softAssertions.assertAll();
 
     }
 
